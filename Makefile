@@ -13,8 +13,8 @@ TEST_SRC_DIR = $(CURR_DIR)/tests
 TEST_BIN_DIR = $(BIN_DIR)/tests
 TEST_OBJ_DIR = $(OBJ_DIR)/tests
 
-TEST_BINS = $(TEST_BIN_DIR)/LineParser_test
-TEST_FILES = $(TEST_SRC_DIR)/LineParser_files
+TEST_BINS = $(TEST_BIN_DIR)/lineParser_test
+TEST_FILES = $(TEST_SRC_DIR)/lineParser_files
 TEST_OBJS = $(TEST_OBJ_DIR)/lineParser_test.o
 
 # headers and libraries
@@ -46,7 +46,7 @@ all: $(LIBS) $(TEST_BINS)
 
 $(TEST_BINS): $(LIBS) $(TEST_OBJS)
 	test -d $(TEST_BIN_DIR) || mkdir -p $(TEST_BIN_DIR)
-	$(CC) $(CFLAGS) $(TEST_OBJ_DIR)/$(@F).o $(LIBRARIES) -l$(LIB_NAME) -lmclabutils -o $@
+	$(CC) $(CFLAGS) $(TEST_OBJ_DIR)/$(@F).o $(LIBRARIES) -l$(LIB_NAME) -lMCLabUtils -lm -o $@
 	cp -r $(TEST_FILES) $(TEST_BIN_DIR)
 
 $(TEST_OBJS): $(TEST_SRC_DIR)/$(@F:.o=.c)
