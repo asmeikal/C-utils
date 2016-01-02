@@ -4,8 +4,8 @@
  * @language c
  */
 
-#include "lineParser.h"
-#include "Vector.h"
+#include <LineParser.h>
+#include <Vector.h>
 
 #include <stdio.h>
 #include <stdlib.h>

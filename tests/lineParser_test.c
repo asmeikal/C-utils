@@ -6,8 +6,8 @@
 //
 //
 
-#include "lineParser.h"
-#include "Vector.h"
+#include <LineParser.h>
+#include <Vector.h>
 
 #include <stdlib.h>
 #include <stdio.h>
