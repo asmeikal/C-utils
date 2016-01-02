@@ -1,12 +1,11 @@
-//
-//  lineParser.c
-//  openCL
-//
-//  Created by Michele Laurenti on 21/12/15.
-//
-//
+/**
+ * @file
+ * @author Michele Laurenti
+ * @language c
+ */
 
 #include "lineParser.h"
+#include "Vector.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,23 +18,67 @@
 
 #define STRING_SIZE	256
 #define LINES_DEFAULT	16
+#define LINES_INCREASE	16
 
 #define DEBUG		"lineParser"
 
-/**
- * @function parseLines
- * @param file
- * The name of the file to be parsed.
- */
+char *fileGetLine(FILE *fd)
+{
+	const char * const fname = "fileGetLine";
+	char *result, *result_tmp, *ret;
+	int size = STRING_SIZE;
+	int done;
+
+	result = calloc(size, 1);
+	if (NULL == result) {
+		Debug_out(DEBUG, "%s: calloc failed.\n", fname);
+		return NULL;
+	}
+	do {
+
+		ret = fgets(result+strlen(result), size-strlen(result), fd);
+		if (NULL == ret) {
+			free(result);
+			Debug_out(DEBUG, "%s: EOF reached or fgets failed.\n", fname);
+			return NULL;
+		}
+
+		done = StringUtils_endsWith(result, "\n");
+		if (!done) {
+			Debug_out(DEBUG, "%s: expanding string.\n", fname);
+			result_tmp = calloc(size*2, 1);
+			if (NULL == result_tmp) {
+				Debug_out(DEBUG, "%s: calloc failed.\n", fname);
+				free(result);
+				return NULL;
+			}
+			memcpy(result_tmp, result, strlen(result));
+			free(result);
+			result = result_tmp;
+			size = size * 2;
+		}
+	} while (!done);
+
+	ret = StringUtils_clone(result);
+	if (NULL == ret) {
+		Debug_out(DEBUG, "%s: StringUtils_clone failed.\n", fname);
+		free(result);
+		return NULL;
+	}
+	free(result);
+	result = ret;
+
+	Debug_out(DEBUG, "%s", result);
+
+	return result;
+}
+
 char **parseLines(const char * const file)
 {
-	const char * const fname = "parseLines";
+	const char * const fname = "newParseLine";
 	FILE *fd;
-	char *ret, **lines, **lines_tmp;
-	char line_tmp[STRING_SIZE] = {0};
-	size_t n_lines = 0, max_lines = LINES_DEFAULT;
-
-	Debug_assert(DEBUG, NULL != file, "%s: NULL == file.\n", fname);
+	char *line, **result;
+	Array *lines;
 
 	/* open file */
 	fd = fopen(file, "r");
@@ -44,112 +87,36 @@ char **parseLines(const char * const file)
 		goto error;
 	}
 
-	/* allocs */
-	lines = calloc(max_lines, sizeof(char *));
+	/* create array */
+	lines = Array_newString(LINES_DEFAULT, LINES_INCREASE);
 	if (NULL == lines) {
-		Debug_out(DEBUG, "%s: calloc failed.\n", fname);
+		Debug_out(DEBUG, "%s: unable to create new Array.\n", fname);
 		goto clean1;
 	}
 
-	/* parse file */
+	/* read the file */
 	do {
-		if (n_lines == max_lines) {
-			max_lines = max_lines * 2;
-			lines_tmp = lines;
-			lines = calloc(max_lines, sizeof(char *));
-			if (NULL == lines) {
-				Debug_out(DEBUG, "%s: calloc failed.\n", fname);
-				lines = lines_tmp;
-				goto clean2;
-			}
-			memcpy(lines, lines_tmp, n_lines * sizeof(char *));
-			free(lines_tmp);
+		line = fileGetLine(fd);
+		if (NULL != line) {
+			Array_add(lines, &line);
 		}
-		ret = fgets(line_tmp, STRING_SIZE, fd);
-		if (NULL != ret) {
-			if (!StringUtils_endsWith(line_tmp, "\n")) {
-				Debug_out(DEBUG, "%s: line %ld is too long.\n", fname, n_lines+1);
-				goto clean2;
-			}
-			lines[n_lines] = StringUtils_clone(line_tmp);
-			if (NULL == lines[n_lines]) {
-				Debug_out(DEBUG, "%s: StringUtils_clone failed.\n", fname);
-				goto clean2;
-			}
-		} else {
-			lines[n_lines] = NULL;
-		}
-		++n_lines;
-	} while (NULL != ret);
+	} while (NULL != line);
 
-	/* squeeze vector of lines */
-	lines_tmp = lines;
-	lines = calloc(n_lines, sizeof(char *));
-	if (NULL == lines) {
+	/* convert array to vector of (char *) */
+	int size = Array_length(lines);
+	result = calloc(size+1, sizeof(char *));
+	if (NULL == result) {
 		Debug_out(DEBUG, "%s: calloc failed.\n", fname);
-		lines = lines_tmp;
 		goto clean2;
 	}
-	memcpy(lines, lines_tmp, n_lines * sizeof(char *));
-	free(lines_tmp);
-
+	memcpy(result, Array_as_C_array(lines), size * sizeof(char *));
+	result[size] = NULL;
+	Array_free(&lines);
 	fclose(fd);
-	return lines;
+	return result;
 
-	/* errors */
-clean2:	freeLines(lines);
+clean2:	Array_free(&lines);
 clean1:	fclose(fd);
 error:	return NULL;
-}
-
-/**
- * @function freeLines
- */
-void freeLines(char **lines)
-{
-	if (NULL == lines) {
-		return;
-	}
-	char **start = lines;
-	while (NULL != *lines) {
-		free(*lines);
-		++lines;
-	}
-	free(start);
-}
-
-/**
- * @function printLines
- */
-void printLines(char **lines)
-{
-	if (NULL == lines) {
-		return;
-	}
-	int i = 0, j;
-	j = ((int) log10(countLines(lines))) + 2;
-	printf("\n");
-	while (NULL != *lines) {
-		++i;
-		printf("%-*d|\t%s", j, i, *lines);
-		++lines;
-	}
-	printf("\n");
-}
-
-/**
- * @function countLines
- */
-int countLines(char **lines)
-{
-	if (NULL == lines) {
-		return 0;
-	}
-	int c = 0;
-	while(NULL != *lines) {
-		++c;
-		++lines;
-	}
-	return c;
 }
 
