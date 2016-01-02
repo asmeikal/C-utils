@@ -6,14 +6,15 @@ SRC_DIR = $(CURR_DIR)/src
 OBJ_DIR = $(CURR_DIR)/obj
 BIN_DIR = $(CURR_DIR)/bin
 
-OBJS = $(OBJ_DIR)/lineParser.o
+OBJS = $(OBJ_DIR)/LineParser.o \
+	   $(OBJ_DIR)/Vector.o
 
 TEST_SRC_DIR = $(CURR_DIR)/tests
 TEST_BIN_DIR = $(BIN_DIR)/tests
 TEST_OBJ_DIR = $(OBJ_DIR)/tests
 
-TEST_BINS = $(TEST_BIN_DIR)/lineParser_test
-TEST_FILES = $(TEST_SRC_DIR)/lineParser_files
+TEST_BINS = $(TEST_BIN_DIR)/LineParser_test
+TEST_FILES = $(TEST_SRC_DIR)/LineParser_files
 TEST_OBJS = $(TEST_OBJ_DIR)/lineParser_test.o
 
 # headers and libraries
@@ -36,8 +37,10 @@ LIBRARIES += -L$(MCLAB_LIB)
 # compiler and compiler flags
 
 CC = clang
-CFLAGS_PRODUCTION = -O2
-CFLAGS = -g -fno-builtin --std=c99 --pedantic --pedantic-errors -Wall -Wextra -Wno-unused $(INCLUDES) #$(CFLAGS_PRODUCTION)
+CFLAGS_PRODUCTION = -O2 -DNDEBUG
+CFLAGS = -g -fno-builtin --std=c99 --pedantic --pedantic-errors -Wall -Wextra -Wno-unused $(INCLUDES)
+
+#CFLAGS += $(CFLAGS_PRODUCTION)
 
 all: $(LIBS) $(TEST_BINS)
 
