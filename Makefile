@@ -6,16 +6,19 @@ SRC_DIR = $(CURR_DIR)/src
 OBJ_DIR = $(CURR_DIR)/obj
 BIN_DIR = $(CURR_DIR)/bin
 
-OBJS = $(OBJ_DIR)/LineParser.o \
+OBJS = $(OBJ_DIR)/CopyrightNotice.o \
+	   $(OBJ_DIR)/LineParser.o \
 	   $(OBJ_DIR)/Vector.o
 
 TEST_SRC_DIR = $(CURR_DIR)/tests
 TEST_BIN_DIR = $(BIN_DIR)/tests
 TEST_OBJ_DIR = $(OBJ_DIR)/tests
 
-TEST_BINS = $(TEST_BIN_DIR)/lineParser_test
+TEST_BINS = $(TEST_BIN_DIR)/lineParser_test \
+			$(TEST_BIN_DIR)/copyright_test
 TEST_FILES = $(TEST_SRC_DIR)/lineParser_files
-TEST_OBJS = $(TEST_OBJ_DIR)/lineParser_test.o
+TEST_OBJS = $(TEST_OBJ_DIR)/lineParser_test.o \
+			$(TEST_OBJ_DIR)/copyright_test.o
 
 # headers and libraries
 
