@@ -4,6 +4,8 @@ Utilities generiche per il C.
 
 - [MCLabUtils](https://bitbucket.org/mclab/mclabutils).
 
+Il Makefile si aspetta una variabile MCLABDIR contenente il path alla cartella contenente le MCLabUtils.
+
 ## Contents
 
 - `ArrayUtils.h`: solo una macro per conoscere la lunghezza di un array.
