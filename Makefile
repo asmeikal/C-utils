@@ -8,6 +8,8 @@ BIN_DIR = $(CURR_DIR)/bin
 
 OBJS = $(OBJ_DIR)/CopyrightNotice.o \
 	   $(OBJ_DIR)/LineParser.o \
+	   $(OBJ_DIR)/MLUtils.o \
+	   $(OBJ_DIR)/pgm.o \
 	   $(OBJ_DIR)/Vector.o
 
 TEST_SRC_DIR = $(CURR_DIR)/tests
@@ -15,9 +17,11 @@ TEST_BIN_DIR = $(BIN_DIR)/tests
 TEST_OBJ_DIR = $(OBJ_DIR)/tests
 
 TEST_BINS = $(TEST_BIN_DIR)/lineParser_test \
+			$(TEST_BIN_DIR)/MLUtils_test \
 			$(TEST_BIN_DIR)/copyright_test
 TEST_FILES = $(TEST_SRC_DIR)/lineParser_files
 TEST_OBJS = $(TEST_OBJ_DIR)/lineParser_test.o \
+			$(TEST_OBJ_DIR)/MLUtils_test.o \
 			$(TEST_OBJ_DIR)/copyright_test.o
 
 # headers and libraries
@@ -43,7 +47,7 @@ CC = clang
 CFLAGS_PRODUCTION = -O2 -DNDEBUG
 CFLAGS = -g -fno-builtin --std=c99 --pedantic --pedantic-errors -Wall -Wextra -Wno-unused $(INCLUDES)
 
-#CFLAGS += $(CFLAGS_PRODUCTION)
+CFLAGS += $(CFLAGS_PRODUCTION)
 
 all: $(LIBS) $(TEST_BINS)
 
