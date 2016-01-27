@@ -22,6 +22,16 @@
 
 #define DEBUG		"lineParser"
 
+/*!
+ * @function fileGetLine
+ * Returns a pointer to the next line from [fd], or NULL if no more lines
+ * are available. The char pointer returned must be manually freed.
+ * @param fd
+ * The file descriptor from which to read.
+ * @return
+ * A pointer to a newly allocated string containing the next line of [fd],
+ * or NULL.
+ */
 char *fileGetLine(FILE *fd)
 {
 	const char * const fname = "fileGetLine";
@@ -39,7 +49,9 @@ char *fileGetLine(FILE *fd)
 		ret = fgets(result+strlen(result), size-strlen(result), fd);
 		if (NULL == ret) {
 			free(result);
-			Debug_out(DEBUG, "%s: EOF reached or fgets failed.\n", fname);
+			if (0 == feof(fd)) {
+				Debug_out(DEBUG, "%s: fgets failed.\n", fname);
+			}
 			return NULL;
 		}
 
@@ -73,6 +85,17 @@ char *fileGetLine(FILE *fd)
 	return result;
 }
 
+/*!
+ * @function parseLines
+ * Opens [file] and reads all lines from it, returning a pointer to a NULL-terminated
+ * vector of strings (char pointers), each containing a line. The vector can be freed
+ * with Vector_free from Vector.h
+ * @param file
+ * The filename of the file to be read.
+ * @return
+ * A pointer to a NULL-terminated vecotr of char pointers, each containing a line, or
+ * NULL on failure.
+ */
 char **parseLines(const char * const file)
 {
 	const char * const fname = "newParseLine";
