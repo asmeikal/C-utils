@@ -85,6 +85,7 @@ int pgm_load(unsigned char ** const img, int * const height, int * const width, 
 		Debug_out(DEBUG_PGM, "%s: calloc failed.\n", fname);
 		goto error2;
 	}
+	Debug_out(DEBUG_PGM, "%s: Result image buffer allocated.\n", fname);
 	for (j = 0; j < l_width * l_height; ++j) {
 		if (NULL == lines[i+j]) {
 			Debug_out(DEBUG_PGM, "%s: image ended too early.\n", fname);
@@ -93,7 +94,8 @@ int pgm_load(unsigned char ** const img, int * const height, int * const width, 
 			Debug_out(DEBUG_PGM, "%s: error scanning line %d: %s.\n", fname, i+j, lines[i+j]);
 			goto error3;
 		}
-		(*img)[i+j] = tmp;
+		Debug_out(DEBUG_PGM, "%s: Pixel %d is %d.\n", fname, j, tmp);
+		(*img)[j] = tmp;
 	}
 	/* save width and height, and free parsed lines */
 	if (NULL != width) {
