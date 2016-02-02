@@ -62,7 +62,7 @@ void Vector_printString(void **vector)
 		printf("\n");
 		while (NULL != *vector) {
 			++i;
-			printf("%-*d|\t%s", j, i, (char *) *vector);
+			printf("%-*d|\t%p: %s", j, i, vector, (char *) *vector);
 			++vector;
 		}
 		printf("\n");
