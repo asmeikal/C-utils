@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <Array.h>
+
 /*!
 	@function fileGetLine
 	@abstract
@@ -38,5 +40,6 @@ char *fileGetLine(FILE *fd);
  */
 char **parseLines(const char * const file);
 
+Array *parseLines_array(const char * const file);
 
 #endif /* lineParser_h */

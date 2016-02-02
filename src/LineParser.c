@@ -143,3 +143,48 @@ clean1:	fclose(fd);
 error:	return NULL;
 }
 
+/*!
+ * @function parseLines_array
+ * Opens [file] and reads all lines from it, returning an array of strings,
+ * each element being a line.
+ * @param file
+ * The filename of the file to be read.
+ * @return
+ * An array of strings containing the lines.
+ */
+Array *parseLines_array(const char * const file)
+{
+	const char * const fname = "newParseLine";
+	FILE *fd;
+	char *line, **result;
+	Array *lines;
+
+	/* open file */
+	fd = fopen(file, "r");
+	if (NULL == fd) {
+		Debug_out(DEBUG, "%s: '%s': %s.\n", fname, file, strerror(errno));
+		goto error;
+	}
+
+	/* create array */
+	lines = Array_newString(LINES_DEFAULT, LINES_INCREASE);
+	if (NULL == lines) {
+		Debug_out(DEBUG, "%s: unable to create new Array.\n", fname);
+		goto clean1;
+	}
+
+	/* read the file */
+	do {
+		line = fileGetLine(fd);
+		if (NULL != line) {
+			Array_add(lines, &line);
+		}
+	} while (NULL != line);
+
+	return lines;
+
+clean2:	Array_free(&lines);
+clean1:	fclose(fd);
+error:	return NULL;
+}
+
