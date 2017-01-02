@@ -33,7 +33,7 @@ LIB_DIR = $(CURR_DIR)/lib
 LIBS = $(LIB_DIR)/lib$(LIB_NAME).a
 LIBRARIES = -L$(LIB_DIR)
 
-MCLABUTILS = $(shell echo ${MCLABDIR})
+MCLABUTILS = ${HOME}/Developer/c/utils/mclabutils
 
 MCLAB_INCLUDE = $(MCLABUTILS)/include
 MCLAB_LIB = $(MCLABUTILS)/lib
@@ -43,7 +43,7 @@ LIBRARIES += -L$(MCLAB_LIB)
 
 # compiler and compiler flags
 
-CC = clang
+CC = gcc
 CFLAGS_PRODUCTION = -O2 -DNDEBUG
 CFLAGS = -g -fno-builtin --std=c99 --pedantic --pedantic-errors -Wall -Wextra -Wno-unused $(INCLUDES)
 
